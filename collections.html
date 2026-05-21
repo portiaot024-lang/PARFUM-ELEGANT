@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <title>Collections - PARFUM ELEGANT</title>
+</head>
+<body>
+
+  <div class="header-title">
+    <h1>PARFUM ELEGANT</h1>
+  </div>
+  <nav>
+    <div class="nav">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="collections.html">Collections</a>
+      <a href="feedback.html">Feedback</a>
+      <a href="#" class="cart-icon" onclick="toggleCart(event)">🛒 <span id="cart-count">0</span></a>
+    </div>
+  </nav>
+
+  <!-- CART POPUP -->
+  <div id="cart-popup" class="cart-popup hidden">
+    <div class="cart-header">
+      <h3>Your Cart</h3>
+      <button onclick="toggleCart(event)" class="cart-close">✕</button>
+    </div>
+    <div id="cart-items" class="cart-items">
+      <p class="cart-empty">Your cart is empty.</p>
+    </div>
+    <div class="cart-footer">
+      <p class="cart-total">Total: <strong id="cart-total">P0.00</strong></p>
+      <button class="place-order-btn" onclick="placeOrder()">Place Order</button>
+    </div>
+  </div>
+  <div id="cart-overlay" class="cart-overlay hidden" onclick="toggleCart(event)"></div>
+
+  <!-- ORDER SUCCESS MESSAGE -->
+  <div id="order-success" class="order-success hidden">
+    <div class="order-success-box">
+      <h2>🎉 Order Placed!</h2>
+      <p>Thank you for your order. We will be in touch shortly.</p>
+      <button onclick="closeSuccess()">Continue Shopping</button>
+    </div>
+  </div>
+
+  <!-- HERO SECTION -->
+  <section class="hero-container">
+    <!-- VIDEO -->
+    <video autoplay muted loop playsinline class="hero-video">
+      <source src="video 3.mp4" type="video/mp4">
+    </video>
+    <!-- DARK OVERLAY -->
+    <div class="hero-overlay"></div>
+    <!-- content inside video -->
+    <div class="hero-content">
+      <p class="hero-text">
+        Elegance In Every Drop.
+      </p>
+      <a href="#niche" class="hero-btn">
+        Explore
+      </a>
+    </div>
+  </section>
+
+  <!-- NICHE SECTION -->
+  <section class="collection niche-content" id="niche">
+    <h2>Niche</h2>
+    <div class="collection-grid">
+      <div class="product card">
+        <img src="img/niche1.jpg" class="product-img">
+        <p>Niche No.1<br>P8 500.00</p>
+        <button class="add-to-cart-btn" onclick="addToCart('Niche No.1', 8500)">Add to Cart</button>
+      </div>
+      <div class="product card">
+        <img src="img/niche2.jpg" class="product-img">
+        <p>Nordic Cedar<br>P9 000.00</p>
+        <button class="add-to-cart-btn" onclick="addToCart('Nordic Cedar', 9000)">Add to Cart</button>
+      </div>
+      <div class="product card">
+        <img src="img/Niche3.jpg" class="product-img">
+        <p>Musk Cedar<br>P9 500.00</p>
+        <button class="add-to-cart-btn" onclick="addToCart('Musk Cedar', 9500)">Add to Cart</button>
+      </div>
+      <div class="product card">
+        <img src="img/niche4.jpg" class="product-img">
+        <p>Tobak<br>P8 000.00</p>
+        <button class="add-to-cart-btn" onclick="addToCart('Tobak', 8000)">Add to Cart</button>
+      </div>
+      <div class="product card">
+        <img src="img/niche5.jpg" class="product-img">
+        <p>Maison Francis<br>P8 500.00</p>
+        <button class="add-to-cart-btn" onclick="addToCart('Maison Francis', 8500)">Add to Cart</button>
+      </div>
+      <div class="product card">
+        <img src="img/niche6.jpg" class="product-img">
+        <p>Midnight Rose<br>P7 500.00</p>
+        <button class="add-to-cart-btn" onclick="addToCart('Midnight Rose', 7500)">Add to Cart</button>
+      </div>
+      <div class="product card">
+        <img src="img/niche7.jpg" class="product-img">
+        <p>Torak<br>P7 000.00</p>
+        <button class="add-to-cart-btn" onclick="addToCart('Torak', 7000)">Add to Cart</button>
+      </div>
+      <div class="product card">
+        <img src="img/niche8.jpg" class="product-img">
+        <p>Firinze<br>P7 500.00</p>
+        <button class="add-to-cart-btn" onclick="addToCart('Firinze', 7500)">Add to Cart</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ARABIC SECTION -->
+  <section class="collection arabic-content" id="arabic">
+    <h2>Arabic</h2>
+    <div class="collection-grid">
+      <div class="product card">
+        <img src="img/arabic1.jpg" class="product-img">
+        <p>Yara Pink<br>P12 000.00</p>
+        <button class="add-to-cart-btn" onclick="addToCart('Yara Pink', 12000)">Add to Cart</button>
+      </div>
+      <div class="product card">
+        <img src="img/arabic2.jpg" class="product-img">
+        <p>Yara Floral<br>P11 500.00</p>
+        <button class="add-to-cart-btn" onclick="addToCart('Yara Floral', 11500)">Add to Cart</button>
+      </div>
+      <div class="product card">
+        <img src="img/arabic3.jpg" class="product-img">
+        <p>Ba'del OUD<br>P10 500.00</p>
+        <button class="add-to-cart-btn" onclick="addToCart('Ba\'del OUD', 10500)">Add to Cart</button>
+      </div>
+      <div class="product card">
+        <img src="img/arabic4.jpg" class="product-img">
+        <p>Khadlaj<br>P13 000.00</p>
+        <button class="add-to-cart-btn" onclick="addToCart('Khadlaj', 13000)">Add to Cart</button>
+      </div>
+      <div class="product card">
+        <img src="img/arabic5.jpg" class="product-img">
+        <p>Yara Citrus<br>P11 000.00</p>
+        <button class="add-to-cart-btn" onclick="addToCart('Yara Citrus', 11000)">Add to Cart</button>
+      </div>
+      <div class="product card">
+        <img src="img/arabic6.jpg" class="product-img">
+        <p>Dubai OUD<br>P10 000.00</p>
+        <button class="add-to-cart-btn" onclick="addToCart('Dubai OUD', 10000)">Add to Cart</button>
+      </div>
+      <div class="product card">
+        <img src="img/arabic7.jpg" class="product-img">
+        <p>Barakhat<br>P9 500.00</p>
+        <button class="add-to-cart-btn" onclick="addToCart('Barakhat', 9500)">Add to Cart</button>
+      </div>
+      <div class="product card">
+        <img src="img/arabic8.jpg" class="product-img">
+        <p>Al Naseem<br>P12 500.00</p>
+        <button class="add-to-cart-btn" onclick="addToCart('Al Naseem', 12500)">Add to Cart</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- DESIGNER SECTION -->
+  <section class="collection designer-content" id="designer">
+    <h2>Designer</h2>
+    <div class="collection-grid">
+      <div class="product card">
+        <img src="img/des2.jpg" class="product-img">
+        <p>Treson Midnight Rose<br>P10 000.00</p>
+        <button class="add-to-cart-btn" onclick="addToCart('Treson Midnight Rose', 10000)">Add to Cart</button>
+      </div>
+      <div class="product card">
+        <img src="img/des1.jpg" class="product-img">
+        <p>Guc ErD<br>P10 500.00</p>
+        <button class="add-to-cart-btn" onclick="addToCart('Guc ErD', 10500)">Add to Cart</button>
+      </div>
+      <div class="product card">
+        <img src="img/des3.jpg" class="product-img">
+        <p>Midnight Lile<br>P11 000.00</p>
+        <button class="add-to-cart-btn" onclick="addToCart('Midnight Lile', 11000)">Add to Cart</button>
+      </div>
+      <div class="product card">
+        <img src="img/des4.jpg" class="product-img">
+        <p>Dior Classique<br>P9 500.00</p>
+        <button class="add-to-cart-btn" onclick="addToCart('Dior Classique', 9500)">Add to Cart</button>
+      </div>
+      <div class="product card">
+        <img src="img/des5.jpg" class="product-img">
+        <p>Rose OUD<br>P9 000.00</p>
+        <button class="add-to-cart-btn" onclick="addToCart('Rose OUD', 9000)">Add to Cart</button>
+      </div>
+      <div class="product card">
+        <img src="img/des6.jpg" class="product-img">
+        <p>Victoria Secret<br>P10 000.00</p>
+        <button class="add-to-cart-btn" onclick="addToCart('Victoria Secret', 10000)">Add to Cart</button>
+      </div>
+      <div class="product card">
+        <img src="img/des7.jpg" class="product-img">
+        <p>Maya Njie<br>P8 500.00</p>
+        <button class="add-to-cart-btn" onclick="addToCart('Maya Njie', 8500)">Add to Cart</button>
+      </div>
+      <div class="product card">
+        <img src="img/des8.jpg" class="product-img">
+        <p>Cocoa Chanel<br>P9 000.00</p>
+        <button class="add-to-cart-btn" onclick="addToCart('Cocoa Chanel', 9000)">Add to Cart</button>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    /* CART ICON */
+    .cart-icon {
+      font-size: 16px;
+      cursor: pointer;
+      color: #111111 !important;
+    }
+
+    /* CART POPUP */
+    .cart-popup {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 350px;
+      height: 100vh;
+      background: #FAF7F2;
+      border-left: 1px solid #e08206;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      box-shadow: -5px 0 20px rgba(0,0,0,0.1);
+    }
+
+    .cart-popup.hidden { display: none; }
+
+    .cart-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.3);
+      z-index: 999;
+    }
+    .cart-overlay.hidden { display: none; }
+
+    .cart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #e08206;
+      padding-bottom: 10px;
+    }
+
+    .cart-header h3 {
+      font-size: 1.3rem;
+      color: #9A6B1F;
+    }
+
+    .cart-close {
+      background: none;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      color: #9A6B1F;
+    }
+
+    .cart-items {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .cart-empty {
+      color: #999;
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #e6d0a2;
+      font-size: 14px;
+      color: #4b3922;
+    }
+
+    .cart-item-remove {
+      background: none;
+      border: none;
+      color: #C89B3C;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .cart-footer {
+      border-top: 1px solid #e08206;
+      padding-top: 15px;
+      margin-top: 10px;
+    }
+
+    .cart-total {
+      font-size: 16px;
+      color: #9A6B1F;
+      margin-bottom: 15px;
+    }
+
+    .place-order-btn {
+      width: 100%;
+      padding: 12px;
+      background: #C89B3C;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      font-size: 14px;
+      font-family: 'Georgia', serif;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    .place-order-btn:hover {
+      background: #9A6B1F;
+    }
+
+    /* ADD TO CART BUTTON */
+    .add-to-cart-btn {
+      display: block;
+      width: 100%;
+      margin-top: 10px;
+      padding: 8px;
+      background: transparent;
+      border: 1px solid #C89B3C;
+      border-radius: 30px;
+      color: #C89B3C;
+      font-size: 12px;
+      font-family: 'Georgia', serif;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    .add-to-cart-btn:hover {
+      background: #C89B3C;
+      color: white;
+    }
+
+    /* ORDER SUCCESS */
+    .order-success {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 2000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .order-success.hidden { display: none; }
+
+    .order-success-box {
+      background: #FAF7F2;
+      border: 1px solid #e08206;
+      border-radius: 12px;
+      padding: 40px;
+      text-align: center;
+      max-width: 400px;
+    }
+
+    .order-success-box h2 {
+      color: #9A6B1F;
+      margin-bottom: 15px;
+    }
+
+    .order-success-box p {
+      color: #4b3922;
+      margin-bottom: 25px;
+    }
+
+    .order-success-box button {
+      padding: 12px 30px;
+      background: #C89B3C;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      font-size: 14px;
+      font-family: 'Georgia', serif;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    .order-success-box button:hover {
+      background: #9A6B1F;
+    }
+  </style>
+
+  <script>
+    let cart = [];
+
+    function addToCart(name, price) {
+      const existing = cart.find(item => item.name === name);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({ name, price, qty: 1 });
+      }
+      updateCartCount();
+      renderCartItems();
+    }
+
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      updateCartCount();
+      renderCartItems();
+    }
+
+    function updateCartCount() {
+      const total = cart.reduce((sum, item) => sum + item.qty, 0);
+      document.getElementById('cart-count').textContent = total;
+    }
+
+    function renderCartItems() {
+      const container = document.getElementById('cart-items');
+      if (cart.length === 0) {
+        container.innerHTML = '<p class="cart-empty">Your cart is empty.</p>';
+        document.getElementById('cart-total').textContent = 'P0.00';
+        return;
+      }
+      container.innerHTML = cart.map((item, i) => `
+        <div class="cart-item">
+          <span>${item.name} x${item.qty}</span>
+          <span>P${(item.price * item.qty).toLocaleString()}.00</span>
+          <button class="cart-item-remove" onclick="removeFromCart(${i})">✕</button>
+        </div>
+      `).join('');
+      const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+      document.getElementById('cart-total').textContent = 'P' + total.toLocaleString() + '.00';
+    }
+
+    function toggleCart(e) {
+      e.preventDefault();
+      document.getElementById('cart-popup').classList.toggle('hidden');
+      document.getElementById('cart-overlay').classList.toggle('hidden');
+    }
+
+    function placeOrder() {
+      if (cart.length === 0) {
+        alert('Your cart is empty!');
+        return;
+      }
+      cart = [];
+      updateCartCount();
+      renderCartItems();
+      document.getElementById('cart-popup').classList.add('hidden');
+      document.getElementById('cart-overlay').classList.add('hidden');
+      document.getElementById('order-success').classList.remove('hidden');
+    }
+
+    function closeSuccess() {
+      document.getElementById('order-success').classList.add('hidden');
+    }
+  </script>
+
+</body>
+</html>
