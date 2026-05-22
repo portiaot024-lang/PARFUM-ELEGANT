@@ -21,28 +21,163 @@
     </div>
   </nav>
 
-  <!-- CART POPUP -->
+  <!-- CART DRAWER -->
   <div id="cart-popup" class="cart-popup hidden">
     <div class="cart-header">
-      <h3>Your Cart</h3>
+      <h3>Your Elegant Cart</h3>
       <button onclick="toggleCart(event)" class="cart-close">✕</button>
     </div>
     <div id="cart-items" class="cart-items">
-      <p class="cart-empty">Your cart is empty.</p>
+      <p class="cart-empty">Your cart is currently empty.</p>
     </div>
     <div class="cart-footer">
-      <p class="cart-total">Total: <strong id="cart-total">P0.00</strong></p>
-      <button class="place-order-btn" onclick="placeOrder()">Place Order</button>
+      <div class="cart-total-row">
+        <span>Estimated Total:</span>
+        <strong id="cart-total">P0.00</strong>
+      </div>
+      <button class="place-order-btn" onclick="openCheckoutModal(event)">Proceed to Checkout</button>
     </div>
   </div>
   <div id="cart-overlay" class="cart-overlay hidden" onclick="toggleCart(event)"></div>
 
+  <!-- PREMIUM CHECKOUT MODAL -->
+  <div id="checkout-modal" class="checkout-modal hidden">
+    <div class="checkout-box">
+      <button class="checkout-close" onclick="closeCheckoutModal(event)">✕</button>
+      <h2>Checkout Details</h2>
+      
+      <!-- Simulated Loading Overlay -->
+      <div id="checkout-loading" class="loading-overlay hidden">
+        <div class="spinner"></div>
+        <p>Securing elegant transaction...</p>
+      </div>
+
+      <div class="checkout-layout">
+        <!-- Form Side -->
+        <div class="checkout-form-side">
+          <form id="checkout-form" onsubmit="confirmOrder(event)">
+            <div class="form-group">
+              <label for="checkout-name">Full Name</label>
+              <input type="text" id="checkout-name" required placeholder="e.g. Jane Doe">
+            </div>
+            
+            <div class="form-group">
+              <label for="checkout-email">Email Address</label>
+              <input type="email" id="checkout-email" required placeholder="e.g. jane@example.com">
+            </div>
+            
+            <div class="form-group">
+              <label for="checkout-address">Delivery Address</label>
+              <textarea id="checkout-address" rows="3" required placeholder="Street address, City, Country"></textarea>
+            </div>
+            
+            <div class="payment-selector-title">Select Payment Method</div>
+            <div class="payment-methods-tabs">
+              <button type="button" id="pay-tab-card" class="payment-tab-btn active" onclick="switchPaymentMethod('card')">
+                <span class="tab-icon">💳</span>
+                <span>Credit Card</span>
+              </button>
+              <button type="button" id="pay-tab-momo" class="payment-tab-btn" onclick="switchPaymentMethod('momo')">
+                <span class="tab-icon">📱</span>
+                <span>Mobile Money</span>
+              </button>
+              <button type="button" id="pay-tab-cod" class="payment-tab-btn" onclick="switchPaymentMethod('cod')">
+                <span class="tab-icon">💵</span>
+                <span>Cash on Delivery</span>
+              </button>
+            </div>
+
+            <!-- Card Payment Details Subform -->
+            <div id="payment-form-card" class="payment-subform">
+              <div class="form-group">
+                <label for="card-number">Card Number</label>
+                <input type="text" id="card-number" placeholder="1234 5678 1234 5678" maxlength="19" required>
+              </div>
+              <div class="card-row-2">
+                <div class="form-group">
+                  <label for="card-expiry">Expiry Date</label>
+                  <input type="text" id="card-expiry" placeholder="MM/YY" maxlength="5" required>
+                </div>
+                <div class="form-group">
+                  <label for="card-cvv">CVV/CVC</label>
+                  <input type="text" id="card-cvv" placeholder="123" maxlength="4" required>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mobile Money Subform -->
+            <div id="payment-form-momo" class="payment-subform hidden">
+              <div class="form-group">
+                <label for="momo-phone">Mobile Money Number</label>
+                <input type="text" id="momo-phone" placeholder="e.g. +267 78 219 566">
+              </div>
+            </div>
+
+            <!-- Cash on Delivery Subform -->
+            <div id="payment-form-cod" class="payment-subform hidden">
+              <p class="cod-message">No upfront payment required! You will pay cash or card upon delivery. Standard shipping fee applies.</p>
+            </div>
+
+            <button type="submit" class="confirm-order-btn">Confirm & Complete Order</button>
+          </form>
+        </div>
+
+        <!-- Summary Side -->
+        <div class="checkout-summary-side">
+          <h3>Your Order</h3>
+          <div id="checkout-summary-items" class="summary-items-list">
+            <!-- Dynamically populated -->
+          </div>
+          <div class="summary-price-breakdown">
+            <div class="breakdown-row">
+              <span>Subtotal</span>
+              <span id="checkout-subtotal">P0.00</span>
+            </div>
+            <div class="breakdown-row">
+              <span>Delivery</span>
+              <span id="checkout-delivery">P0.00</span>
+            </div>
+            <div class="breakdown-row total">
+              <span>Total</span>
+              <span id="checkout-total">P0.00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ORDER SUCCESS MESSAGE -->
   <div id="order-success" class="order-success hidden">
     <div class="order-success-box">
-      <h2>🎉 Order Placed!</h2>
-      <p>Thank you for your order. We will be in touch shortly.</p>
-      <button onclick="closeSuccess()">Continue Shopping</button>
+      <div class="success-icon-container">✓</div>
+      <h2>Order Confirmed!</h2>
+      <p>Thank you, <strong id="success-user-name">Client</strong>. Your request for luxury scents has been registered with PARFUM ELEGANT.</p>
+      
+      <div class="success-order-id">
+        ORDER ID: <span id="success-order-ref">PE-2026-0001</span>
+      </div>
+
+      <div class="success-details">
+        <h4>Order Summary</h4>
+        <div class="success-detail-row">
+          <span>Delivery Details sent to:</span>
+          <span id="success-user-email" style="font-weight: 500;"></span>
+        </div>
+        <div class="success-detail-row">
+          <span>Amount Paid/Due:</span>
+          <strong id="success-order-total" style="color: #9A6B1F;">P0.00</strong>
+        </div>
+        <div class="success-detail-row">
+          <span>Payment Method:</span>
+          <span id="success-pay-method" style="font-weight: 500;"></span>
+        </div>
+      </div>
+
+      <p style="font-size: 0.9rem; color: #6e583c; font-style: italic; margin-bottom: 25px;">
+        "We are preparing your elegant selections with absolute care. We highly appreciate your trust in us!"
+      </p>
+      <button onclick="closeSuccess()" style="width: 100%;">Continue Shopping</button>
     </div>
   </div>
 
@@ -69,45 +204,125 @@
   <section class="collection niche-content" id="niche">
     <h2>Niche</h2>
     <div class="collection-grid">
-      <div class="product card">
-        <img src="img/niche1.jpg" class="product-img">
-        <p>Niche No.1<br>P8 500.00</p>
-        <button class="add-to-cart-btn" onclick="addToCart('Niche No.1', 8500)">Add to Cart</button>
+      <div class="product-card">
+        <div class="product-img-container">
+          <img src="img/niche1.jpg" class="product-img" alt="Niche No.1">
+          <div class="product-img-overlay">
+            <button class="image-cart-btn" onclick="addToCart('Niche No.1', 8500, 'img/niche1.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
+        <div class="product-details">
+          <h3 class="product-title">Niche No.1</h3>
+          <div class="price-and-cart">
+            <span class="product-price">P8,500.00</span>
+            <button class="corner-cart-btn" onclick="addToCart('Niche No.1', 8500, 'img/niche1.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
       </div>
-      <div class="product card">
-        <img src="img/niche2.jpg" class="product-img">
-        <p>Nordic Cedar<br>P9 000.00</p>
-        <button class="add-to-cart-btn" onclick="addToCart('Nordic Cedar', 9000)">Add to Cart</button>
+      <div class="product-card">
+        <div class="product-img-container">
+          <img src="img/niche2.jpg" class="product-img" alt="Nordic Cedar">
+          <div class="product-img-overlay">
+            <button class="image-cart-btn" onclick="addToCart('Nordic Cedar', 9000, 'img/niche2.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
+        <div class="product-details">
+          <h3 class="product-title">Nordic Cedar</h3>
+          <div class="price-and-cart">
+            <span class="product-price">P9,000.00</span>
+            <button class="corner-cart-btn" onclick="addToCart('Nordic Cedar', 9000, 'img/niche2.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
       </div>
-      <div class="product card">
-        <img src="img/Niche3.jpg" class="product-img">
-        <p>Musk Cedar<br>P9 500.00</p>
-        <button class="add-to-cart-btn" onclick="addToCart('Musk Cedar', 9500)">Add to Cart</button>
+      <div class="product-card">
+        <div class="product-img-container">
+          <img src="img/Niche3.jpg" class="product-img" alt="Musk Cedar">
+          <div class="product-img-overlay">
+            <button class="image-cart-btn" onclick="addToCart('Musk Cedar', 9500, 'img/Niche3.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
+        <div class="product-details">
+          <h3 class="product-title">Musk Cedar</h3>
+          <div class="price-and-cart">
+            <span class="product-price">P9,500.00</span>
+            <button class="corner-cart-btn" onclick="addToCart('Musk Cedar', 9500, 'img/Niche3.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
       </div>
-      <div class="product card">
-        <img src="img/niche4.jpg" class="product-img">
-        <p>Tobak<br>P8 000.00</p>
-        <button class="add-to-cart-btn" onclick="addToCart('Tobak', 8000)">Add to Cart</button>
+      <div class="product-card">
+        <div class="product-img-container">
+          <img src="img/niche4.jpg" class="product-img" alt="Tobak">
+          <div class="product-img-overlay">
+            <button class="image-cart-btn" onclick="addToCart('Tobak', 8000, 'img/niche4.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
+        <div class="product-details">
+          <h3 class="product-title">Tobak</h3>
+          <div class="price-and-cart">
+            <span class="product-price">P8,000.00</span>
+            <button class="corner-cart-btn" onclick="addToCart('Tobak', 8000, 'img/niche4.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
       </div>
-      <div class="product card">
-        <img src="img/niche5.jpg" class="product-img">
-        <p>Maison Francis<br>P8 500.00</p>
-        <button class="add-to-cart-btn" onclick="addToCart('Maison Francis', 8500)">Add to Cart</button>
+      <div class="product-card">
+        <div class="product-img-container">
+          <img src="img/niche5.jpg" class="product-img" alt="Maison Francis">
+          <div class="product-img-overlay">
+            <button class="image-cart-btn" onclick="addToCart('Maison Francis', 8500, 'img/niche5.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
+        <div class="product-details">
+          <h3 class="product-title">Maison Francis</h3>
+          <div class="price-and-cart">
+            <span class="product-price">P8,500.00</span>
+            <button class="corner-cart-btn" onclick="addToCart('Maison Francis', 8500, 'img/niche5.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
       </div>
-      <div class="product card">
-        <img src="img/niche6.jpg" class="product-img">
-        <p>Midnight Rose<br>P7 500.00</p>
-        <button class="add-to-cart-btn" onclick="addToCart('Midnight Rose', 7500)">Add to Cart</button>
+      <div class="product-card">
+        <div class="product-img-container">
+          <img src="img/niche6.jpg" class="product-img" alt="Midnight Rose">
+          <div class="product-img-overlay">
+            <button class="image-cart-btn" onclick="addToCart('Midnight Rose', 7500, 'img/niche6.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
+        <div class="product-details">
+          <h3 class="product-title">Midnight Rose</h3>
+          <div class="price-and-cart">
+            <span class="product-price">P7,500.00</span>
+            <button class="corner-cart-btn" onclick="addToCart('Midnight Rose', 7500, 'img/niche6.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
       </div>
-      <div class="product card">
-        <img src="img/niche7.jpg" class="product-img">
-        <p>Torak<br>P7 000.00</p>
-        <button class="add-to-cart-btn" onclick="addToCart('Torak', 7000)">Add to Cart</button>
+      <div class="product-card">
+        <div class="product-img-container">
+          <img src="img/niche7.jpg" class="product-img" alt="Torak">
+          <div class="product-img-overlay">
+            <button class="image-cart-btn" onclick="addToCart('Torak', 7000, 'img/niche7.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
+        <div class="product-details">
+          <h3 class="product-title">Torak</h3>
+          <div class="price-and-cart">
+            <span class="product-price">P7,000.00</span>
+            <button class="corner-cart-btn" onclick="addToCart('Torak', 7000, 'img/niche7.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
       </div>
-      <div class="product card">
-        <img src="img/niche8.jpg" class="product-img">
-        <p>Firinze<br>P7 500.00</p>
-        <button class="add-to-cart-btn" onclick="addToCart('Firinze', 7500)">Add to Cart</button>
+      <div class="product-card">
+        <div class="product-img-container">
+          <img src="img/niche8.jpg" class="product-img" alt="Firinze">
+          <div class="product-img-overlay">
+            <button class="image-cart-btn" onclick="addToCart('Firinze', 7500, 'img/niche8.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
+        <div class="product-details">
+          <h3 class="product-title">Firinze</h3>
+          <div class="price-and-cart">
+            <span class="product-price">P7,500.00</span>
+            <button class="corner-cart-btn" onclick="addToCart('Firinze', 7500, 'img/niche8.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -116,45 +331,125 @@
   <section class="collection arabic-content" id="arabic">
     <h2>Arabic</h2>
     <div class="collection-grid">
-      <div class="product card">
-        <img src="img/arabic1.jpg" class="product-img">
-        <p>Yara Pink<br>P12 000.00</p>
-        <button class="add-to-cart-btn" onclick="addToCart('Yara Pink', 12000)">Add to Cart</button>
+      <div class="product-card">
+        <div class="product-img-container">
+          <img src="img/arabic1.jpg" class="product-img" alt="Yara Pink">
+          <div class="product-img-overlay">
+            <button class="image-cart-btn" onclick="addToCart('Yara Pink', 12000, 'img/arabic1.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
+        <div class="product-details">
+          <h3 class="product-title">Yara Pink</h3>
+          <div class="price-and-cart">
+            <span class="product-price">P12,000.00</span>
+            <button class="corner-cart-btn" onclick="addToCart('Yara Pink', 12000, 'img/arabic1.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
       </div>
-      <div class="product card">
-        <img src="img/arabic2.jpg" class="product-img">
-        <p>Yara Floral<br>P11 500.00</p>
-        <button class="add-to-cart-btn" onclick="addToCart('Yara Floral', 11500)">Add to Cart</button>
+      <div class="product-card">
+        <div class="product-img-container">
+          <img src="img/arabic2.jpg" class="product-img" alt="Yara Floral">
+          <div class="product-img-overlay">
+            <button class="image-cart-btn" onclick="addToCart('Yara Floral', 11500, 'img/arabic2.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
+        <div class="product-details">
+          <h3 class="product-title">Yara Floral</h3>
+          <div class="price-and-cart">
+            <span class="product-price">P11,500.00</span>
+            <button class="corner-cart-btn" onclick="addToCart('Yara Floral', 11500, 'img/arabic2.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
       </div>
-      <div class="product card">
-        <img src="img/arabic3.jpg" class="product-img">
-        <p>Ba'del OUD<br>P10 500.00</p>
-        <button class="add-to-cart-btn" onclick="addToCart('Ba\'del OUD', 10500)">Add to Cart</button>
+      <div class="product-card">
+        <div class="product-img-container">
+          <img src="img/arabic3.jpg" class="product-img" alt="Ba'del OUD">
+          <div class="product-img-overlay">
+            <button class="image-cart-btn" onclick="addToCart('Ba\'del OUD', 10500, 'img/arabic3.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
+        <div class="product-details">
+          <h3 class="product-title">Ba'del OUD</h3>
+          <div class="price-and-cart">
+            <span class="product-price">P10,500.00</span>
+            <button class="corner-cart-btn" onclick="addToCart('Ba\'del OUD', 10500, 'img/arabic3.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
       </div>
-      <div class="product card">
-        <img src="img/arabic4.jpg" class="product-img">
-        <p>Khadlaj<br>P13 000.00</p>
-        <button class="add-to-cart-btn" onclick="addToCart('Khadlaj', 13000)">Add to Cart</button>
+      <div class="product-card">
+        <div class="product-img-container">
+          <img src="img/arabic4.jpg" class="product-img" alt="Khadlaj">
+          <div class="product-img-overlay">
+            <button class="image-cart-btn" onclick="addToCart('Khadlaj', 13000, 'img/arabic4.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
+        <div class="product-details">
+          <h3 class="product-title">Khadlaj</h3>
+          <div class="price-and-cart">
+            <span class="product-price">P13,000.00</span>
+            <button class="corner-cart-btn" onclick="addToCart('Khadlaj', 13000, 'img/arabic4.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
       </div>
-      <div class="product card">
-        <img src="img/arabic5.jpg" class="product-img">
-        <p>Yara Citrus<br>P11 000.00</p>
-        <button class="add-to-cart-btn" onclick="addToCart('Yara Citrus', 11000)">Add to Cart</button>
+      <div class="product-card">
+        <div class="product-img-container">
+          <img src="img/arabic5.jpg" class="product-img" alt="Yara Citrus">
+          <div class="product-img-overlay">
+            <button class="image-cart-btn" onclick="addToCart('Yara Citrus', 11000, 'img/arabic5.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
+        <div class="product-details">
+          <h3 class="product-title">Yara Citrus</h3>
+          <div class="price-and-cart">
+            <span class="product-price">P11,000.00</span>
+            <button class="corner-cart-btn" onclick="addToCart('Yara Citrus', 11000, 'img/arabic5.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
       </div>
-      <div class="product card">
-        <img src="img/arabic6.jpg" class="product-img">
-        <p>Dubai OUD<br>P10 000.00</p>
-        <button class="add-to-cart-btn" onclick="addToCart('Dubai OUD', 10000)">Add to Cart</button>
+      <div class="product-card">
+        <div class="product-img-container">
+          <img src="img/arabic6.jpg" class="product-img" alt="Dubai OUD">
+          <div class="product-img-overlay">
+            <button class="image-cart-btn" onclick="addToCart('Dubai OUD', 10000, 'img/arabic6.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
+        <div class="product-details">
+          <h3 class="product-title">Dubai OUD</h3>
+          <div class="price-and-cart">
+            <span class="product-price">P10,000.00</span>
+            <button class="corner-cart-btn" onclick="addToCart('Dubai OUD', 10000, 'img/arabic6.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
       </div>
-      <div class="product card">
-        <img src="img/arabic7.jpg" class="product-img">
-        <p>Barakhat<br>P9 500.00</p>
-        <button class="add-to-cart-btn" onclick="addToCart('Barakhat', 9500)">Add to Cart</button>
+      <div class="product-card">
+        <div class="product-img-container">
+          <img src="img/arabic7.jpg" class="product-img" alt="Barakhat">
+          <div class="product-img-overlay">
+            <button class="image-cart-btn" onclick="addToCart('Barakhat', 9500, 'img/arabic7.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
+        <div class="product-details">
+          <h3 class="product-title">Barakhat</h3>
+          <div class="price-and-cart">
+            <span class="product-price">P9,500.00</span>
+            <button class="corner-cart-btn" onclick="addToCart('Barakhat', 9500, 'img/arabic7.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
       </div>
-      <div class="product card">
-        <img src="img/arabic8.jpg" class="product-img">
-        <p>Al Naseem<br>P12 500.00</p>
-        <button class="add-to-cart-btn" onclick="addToCart('Al Naseem', 12500)">Add to Cart</button>
+      <div class="product-card">
+        <div class="product-img-container">
+          <img src="img/arabic8.jpg" class="product-img" alt="Al Naseem">
+          <div class="product-img-overlay">
+            <button class="image-cart-btn" onclick="addToCart('Al Naseem', 12500, 'img/arabic8.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
+        <div class="product-details">
+          <h3 class="product-title">Al Naseem</h3>
+          <div class="price-and-cart">
+            <span class="product-price">P12,500.00</span>
+            <button class="corner-cart-btn" onclick="addToCart('Al Naseem', 12500, 'img/arabic8.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -163,305 +458,425 @@
   <section class="collection designer-content" id="designer">
     <h2>Designer</h2>
     <div class="collection-grid">
-      <div class="product card">
-        <img src="img/des2.jpg" class="product-img">
-        <p>Treson Midnight Rose<br>P10 000.00</p>
-        <button class="add-to-cart-btn" onclick="addToCart('Treson Midnight Rose', 10000)">Add to Cart</button>
+      <div class="product-card">
+        <div class="product-img-container">
+          <img src="img/des2.jpg" class="product-img" alt="Treson Midnight Rose">
+          <div class="product-img-overlay">
+            <button class="image-cart-btn" onclick="addToCart('Treson Midnight Rose', 10000, 'img/des2.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
+        <div class="product-details">
+          <h3 class="product-title">Treson Midnight Rose</h3>
+          <div class="price-and-cart">
+            <span class="product-price">P10,000.00</span>
+            <button class="corner-cart-btn" onclick="addToCart('Treson Midnight Rose', 10000, 'img/des2.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
       </div>
-      <div class="product card">
-        <img src="img/des1.jpg" class="product-img">
-        <p>Guc ErD<br>P10 500.00</p>
-        <button class="add-to-cart-btn" onclick="addToCart('Guc ErD', 10500)">Add to Cart</button>
+      <div class="product-card">
+        <div class="product-img-container">
+          <img src="img/des1.jpg" class="product-img" alt="Guc ErD">
+          <div class="product-img-overlay">
+            <button class="image-cart-btn" onclick="addToCart('Guc ErD', 10500, 'img/des1.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
+        <div class="product-details">
+          <h3 class="product-title">Guc ErD</h3>
+          <div class="price-and-cart">
+            <span class="product-price">P10,500.00</span>
+            <button class="corner-cart-btn" onclick="addToCart('Guc ErD', 10500, 'img/des1.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
       </div>
-      <div class="product card">
-        <img src="img/des3.jpg" class="product-img">
-        <p>Midnight Lile<br>P11 000.00</p>
-        <button class="add-to-cart-btn" onclick="addToCart('Midnight Lile', 11000)">Add to Cart</button>
+      <div class="product-card">
+        <div class="product-img-container">
+          <img src="img/des3.jpg" class="product-img" alt="Midnight Lile">
+          <div class="product-img-overlay">
+            <button class="image-cart-btn" onclick="addToCart('Midnight Lile', 11000, 'img/des3.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
+        <div class="product-details">
+          <h3 class="product-title">Midnight Lile</h3>
+          <div class="price-and-cart">
+            <span class="product-price">P11,000.00</span>
+            <button class="corner-cart-btn" onclick="addToCart('Midnight Lile', 11000, 'img/des3.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
       </div>
-      <div class="product card">
-        <img src="img/des4.jpg" class="product-img">
-        <p>Dior Classique<br>P9 500.00</p>
-        <button class="add-to-cart-btn" onclick="addToCart('Dior Classique', 9500)">Add to Cart</button>
+      <div class="product-card">
+        <div class="product-img-container">
+          <img src="img/des4.jpg" class="product-img" alt="Dior Classique">
+          <div class="product-img-overlay">
+            <button class="image-cart-btn" onclick="addToCart('Dior Classique', 9500, 'img/des4.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
+        <div class="product-details">
+          <h3 class="product-title">Dior Classique</h3>
+          <div class="price-and-cart">
+            <span class="product-price">P9,500.00</span>
+            <button class="corner-cart-btn" onclick="addToCart('Dior Classique', 9500, 'img/des4.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
       </div>
-      <div class="product card">
-        <img src="img/des5.jpg" class="product-img">
-        <p>Rose OUD<br>P9 000.00</p>
-        <button class="add-to-cart-btn" onclick="addToCart('Rose OUD', 9000)">Add to Cart</button>
+      <div class="product-card">
+        <div class="product-img-container">
+          <img src="img/des5.jpg" class="product-img" alt="Rose OUD">
+          <div class="product-img-overlay">
+            <button class="image-cart-btn" onclick="addToCart('Rose OUD', 9000, 'img/des5.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
+        <div class="product-details">
+          <h3 class="product-title">Rose OUD</h3>
+          <div class="price-and-cart">
+            <span class="product-price">P9,000.00</span>
+            <button class="corner-cart-btn" onclick="addToCart('Rose OUD', 9000, 'img/des5.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
       </div>
-      <div class="product card">
-        <img src="img/des6.jpg" class="product-img">
-        <p>Victoria Secret<br>P10 000.00</p>
-        <button class="add-to-cart-btn" onclick="addToCart('Victoria Secret', 10000)">Add to Cart</button>
+      <div class="product-card">
+        <div class="product-img-container">
+          <img src="img/des6.jpg" class="product-img" alt="Victoria Secret">
+          <div class="product-img-overlay">
+            <button class="image-cart-btn" onclick="addToCart('Victoria Secret', 10000, 'img/des6.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
+        <div class="product-details">
+          <h3 class="product-title">Victoria Secret</h3>
+          <div class="price-and-cart">
+            <span class="product-price">P10,000.00</span>
+            <button class="corner-cart-btn" onclick="addToCart('Victoria Secret', 10000, 'img/des6.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
       </div>
-      <div class="product card">
-        <img src="img/des7.jpg" class="product-img">
-        <p>Maya Njie<br>P8 500.00</p>
-        <button class="add-to-cart-btn" onclick="addToCart('Maya Njie', 8500)">Add to Cart</button>
+      <div class="product-card">
+        <div class="product-img-container">
+          <img src="img/des7.jpg" class="product-img" alt="Maya Njie">
+          <div class="product-img-overlay">
+            <button class="image-cart-btn" onclick="addToCart('Maya Njie', 8500, 'img/des7.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
+        <div class="product-details">
+          <h3 class="product-title">Maya Njie</h3>
+          <div class="price-and-cart">
+            <span class="product-price">P8,500.00</span>
+            <button class="corner-cart-btn" onclick="addToCart('Maya Njie', 8500, 'img/des7.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
       </div>
-      <div class="product card">
-        <img src="img/des8.jpg" class="product-img">
-        <p>Cocoa Chanel<br>P9 000.00</p>
-        <button class="add-to-cart-btn" onclick="addToCart('Cocoa Chanel', 9000)">Add to Cart</button>
+      <div class="product-card">
+        <div class="product-img-container">
+          <img src="img/des8.jpg" class="product-img" alt="Cocoa Chanel">
+          <div class="product-img-overlay">
+            <button class="image-cart-btn" onclick="addToCart('Cocoa Chanel', 9000, 'img/des8.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
+        <div class="product-details">
+          <h3 class="product-title">Cocoa Chanel</h3>
+          <div class="price-and-cart">
+            <span class="product-price">P9,000.00</span>
+            <button class="corner-cart-btn" onclick="addToCart('Cocoa Chanel', 9000, 'img/des8.jpg', event)" title="Add to Cart">🛒</button>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <style>
-    /* CART ICON */
-    .cart-icon {
-      font-size: 16px;
-      cursor: pointer;
-      color: #111111 !important;
-    }
-
-    /* CART POPUP */
-    .cart-popup {
-      position: fixed;
-      top: 0;
-      right: 0;
-      width: 350px;
-      height: 100vh;
-      background: #FAF7F2;
-      border-left: 1px solid #e08206;
-      z-index: 1000;
-      display: flex;
-      flex-direction: column;
-      padding: 20px;
-      box-shadow: -5px 0 20px rgba(0,0,0,0.1);
-    }
-
-    .cart-popup.hidden { display: none; }
-
-    .cart-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.3);
-      z-index: 999;
-    }
-    .cart-overlay.hidden { display: none; }
-
-    .cart-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      border-bottom: 1px solid #e08206;
-      padding-bottom: 10px;
-    }
-
-    .cart-header h3 {
-      font-size: 1.3rem;
-      color: #9A6B1F;
-    }
-
-    .cart-close {
-      background: none;
-      border: none;
-      font-size: 18px;
-      cursor: pointer;
-      color: #9A6B1F;
-    }
-
-    .cart-items {
-      flex: 1;
-      overflow-y: auto;
-    }
-
-    .cart-empty {
-      color: #999;
-      text-align: center;
-      margin-top: 40px;
-    }
-
-    .cart-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 0;
-      border-bottom: 1px solid #e6d0a2;
-      font-size: 14px;
-      color: #4b3922;
-    }
-
-    .cart-item-remove {
-      background: none;
-      border: none;
-      color: #C89B3C;
-      cursor: pointer;
-      font-size: 16px;
-    }
-
-    .cart-footer {
-      border-top: 1px solid #e08206;
-      padding-top: 15px;
-      margin-top: 10px;
-    }
-
-    .cart-total {
-      font-size: 16px;
-      color: #9A6B1F;
-      margin-bottom: 15px;
-    }
-
-    .place-order-btn {
-      width: 100%;
-      padding: 12px;
-      background: #C89B3C;
-      color: white;
-      border: none;
-      border-radius: 30px;
-      font-size: 14px;
-      font-family: 'Georgia', serif;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      cursor: pointer;
-      transition: 0.3s ease;
-    }
-
-    .place-order-btn:hover {
-      background: #9A6B1F;
-    }
-
-    /* ADD TO CART BUTTON */
-    .add-to-cart-btn {
-      display: block;
-      width: 100%;
-      margin-top: 10px;
-      padding: 8px;
-      background: transparent;
-      border: 1px solid #C89B3C;
-      border-radius: 30px;
-      color: #C89B3C;
-      font-size: 12px;
-      font-family: 'Georgia', serif;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      cursor: pointer;
-      transition: 0.3s ease;
-    }
-
-    .add-to-cart-btn:hover {
-      background: #C89B3C;
-      color: white;
-    }
-
-    /* ORDER SUCCESS */
-    .order-success {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.5);
-      z-index: 2000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .order-success.hidden { display: none; }
-
-    .order-success-box {
-      background: #FAF7F2;
-      border: 1px solid #e08206;
-      border-radius: 12px;
-      padding: 40px;
-      text-align: center;
-      max-width: 400px;
-    }
-
-    .order-success-box h2 {
-      color: #9A6B1F;
-      margin-bottom: 15px;
-    }
-
-    .order-success-box p {
-      color: #4b3922;
-      margin-bottom: 25px;
-    }
-
-    .order-success-box button {
-      padding: 12px 30px;
-      background: #C89B3C;
-      color: white;
-      border: none;
-      border-radius: 30px;
-      font-size: 14px;
-      font-family: 'Georgia', serif;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      cursor: pointer;
-      transition: 0.3s ease;
-    }
-
-    .order-success-box button:hover {
-      background: #9A6B1F;
-    }
-  </style>
-
   <script>
     let cart = [];
+    let currentPaymentMethod = 'card';
 
-    function addToCart(name, price) {
+    // Load cart from localStorage on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      loadCart();
+      if (window.location.search.includes('openCart=true') || window.location.hash === '#cart') {
+        openCartDrawer();
+      }
+      
+      // Add card input formatters if they exist
+      const cardNum = document.getElementById('card-number');
+      if (cardNum) {
+        cardNum.addEventListener('input', (e) => {
+          let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+          let matches = value.match(/\d{4,16}/g);
+          let match = (matches && matches[0]) || '';
+          let parts = [];
+
+          for (let i = 0, len = match.length; i < len; i += 4) {
+            parts.push(match.substring(i, i + 4));
+          }
+
+          if (parts.length > 0) {
+            e.target.value = parts.join(' ');
+          } else {
+            e.target.value = value;
+          }
+        });
+      }
+
+      const cardExpiry = document.getElementById('card-expiry');
+      if (cardExpiry) {
+        cardExpiry.addEventListener('input', (e) => {
+          let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+          if (value.length > 2) {
+            e.target.value = value.substring(0, 2) + '/' + value.substring(2, 4);
+          } else {
+            e.target.value = value;
+          }
+        });
+      }
+    });
+
+    function saveCart() {
+      localStorage.setItem('parfum_elegant_cart', JSON.stringify(cart));
+    }
+
+    function loadCart() {
+      const saved = localStorage.getItem('parfum_elegant_cart');
+      if (saved) {
+        try {
+          cart = JSON.parse(saved);
+        } catch (e) {
+          cart = [];
+        }
+      }
+      updateCartCount();
+      renderCartItems();
+    }
+
+    function addToCart(name, price, img, event) {
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
       const existing = cart.find(item => item.name === name);
       if (existing) {
         existing.qty += 1;
       } else {
-        cart.push({ name, price, qty: 1 });
+        cart.push({ name, price, img, qty: 1 });
       }
+      saveCart();
+      updateCartCount();
+      renderCartItems();
+      
+      // Auto open cart drawer when adding item (as per user request: "take user to view their cart")
+      openCartDrawer();
+    }
+
+    function updateQuantity(index, delta) {
+      cart[index].qty += delta;
+      if (cart[index].qty <= 0) {
+        cart.splice(index, 1);
+      }
+      saveCart();
       updateCartCount();
       renderCartItems();
     }
 
     function removeFromCart(index) {
       cart.splice(index, 1);
+      saveCart();
       updateCartCount();
       renderCartItems();
     }
 
     function updateCartCount() {
-      const total = cart.reduce((sum, item) => sum + item.qty, 0);
-      document.getElementById('cart-count').textContent = total;
+      const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
+      document.getElementById('cart-count').textContent = totalCount;
     }
 
     function renderCartItems() {
       const container = document.getElementById('cart-items');
+      if (!container) return;
+
       if (cart.length === 0) {
-        container.innerHTML = '<p class="cart-empty">Your cart is empty.</p>';
+        container.innerHTML = '<p class="cart-empty">Your cart is currently empty.</p>';
         document.getElementById('cart-total').textContent = 'P0.00';
         return;
       }
+
       container.innerHTML = cart.map((item, i) => `
         <div class="cart-item">
-          <span>${item.name} x${item.qty}</span>
-          <span>P${(item.price * item.qty).toLocaleString()}.00</span>
-          <button class="cart-item-remove" onclick="removeFromCart(${i})">✕</button>
+          <img src="${item.img || 'img/niche1.jpg'}" class="cart-item-img" alt="${item.name}">
+          <div class="cart-item-details">
+            <span class="cart-item-name">${item.name}</span>
+            <span class="cart-item-price">P${item.price.toLocaleString()}.00</span>
+          </div>
+          <div class="cart-item-actions">
+            <div class="qty-selector">
+              <button class="qty-btn" onclick="updateQuantity(${i}, -1)">-</button>
+              <span class="qty-num">${item.qty}</span>
+              <button class="qty-btn" onclick="updateQuantity(${i}, 1)">+</button>
+            </div>
+            <button class="cart-item-remove" onclick="removeFromCart(${i})" title="Remove item">✕</button>
+          </div>
         </div>
       `).join('');
+
       const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
       document.getElementById('cart-total').textContent = 'P' + total.toLocaleString() + '.00';
     }
 
-    function toggleCart(e) {
-      e.preventDefault();
+    function openCartDrawer() {
+      document.getElementById('cart-popup').classList.remove('hidden');
+      document.getElementById('cart-overlay').classList.remove('hidden');
+    }
+
+    function toggleCart(event) {
+      if (event) event.preventDefault();
       document.getElementById('cart-popup').classList.toggle('hidden');
       document.getElementById('cart-overlay').classList.toggle('hidden');
     }
 
-    function placeOrder() {
+    // Checkout modal actions
+    function openCheckoutModal(event) {
+      if (event) event.preventDefault();
       if (cart.length === 0) {
-        alert('Your cart is empty!');
+        alert('Your cart is empty! Please add elegant fragrances to your cart first.');
         return;
       }
-      cart = [];
-      updateCartCount();
-      renderCartItems();
+      
+      // Close cart drawer
       document.getElementById('cart-popup').classList.add('hidden');
       document.getElementById('cart-overlay').classList.add('hidden');
-      document.getElementById('order-success').classList.remove('hidden');
+
+      // Build Order Summary
+      const summaryContainer = document.getElementById('checkout-summary-items');
+      summaryContainer.innerHTML = cart.map(item => `
+        <div class="summary-item-row">
+          <span>${item.name} (x${item.qty})</span>
+          <span>P${(item.price * item.qty).toLocaleString()}.00</span>
+        </div>
+      `).join('');
+
+      const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+      const delivery = subtotal >= 10000 ? 0 : 150;
+      const grandTotal = subtotal + delivery;
+
+      document.getElementById('checkout-subtotal').textContent = 'P' + subtotal.toLocaleString() + '.00';
+      document.getElementById('checkout-delivery').textContent = delivery === 0 ? 'FREE' : 'P' + delivery.toLocaleString() + '.00';
+      document.getElementById('checkout-total').textContent = 'P' + grandTotal.toLocaleString() + '.00';
+
+      // Open modal
+      document.getElementById('checkout-modal').classList.remove('hidden');
+    }
+
+    function closeCheckoutModal(event) {
+      if (event) event.preventDefault();
+      document.getElementById('checkout-modal').classList.add('hidden');
+    }
+
+    function switchPaymentMethod(method) {
+      currentPaymentMethod = method;
+      
+      // Toggle active tabs
+      document.getElementById('pay-tab-card').classList.remove('active');
+      document.getElementById('pay-tab-momo').classList.remove('active');
+      document.getElementById('pay-tab-cod').classList.remove('active');
+      
+      document.getElementById(`pay-tab-${method}`).classList.add('active');
+
+      // Toggle subforms
+      document.getElementById('payment-form-card').classList.add('hidden');
+      document.getElementById('payment-form-momo').classList.add('hidden');
+      document.getElementById('payment-form-cod').classList.add('hidden');
+
+      document.getElementById(`payment-form-${method}`).classList.remove('hidden');
+
+      // Adjust form validation fields dynamically
+      const cardInputs = document.querySelectorAll('#payment-form-card input');
+      const momoInputs = document.querySelectorAll('#payment-form-momo input');
+
+      if (method === 'card') {
+        cardInputs.forEach(i => i.setAttribute('required', 'true'));
+        momoInputs.forEach(i => i.removeAttribute('required'));
+      } else if (method === 'momo') {
+        cardInputs.forEach(i => i.removeAttribute('required'));
+        momoInputs.forEach(i => i.setAttribute('required', 'true'));
+      } else {
+        cardInputs.forEach(i => i.removeAttribute('required'));
+        momoInputs.forEach(i => i.removeAttribute('required'));
+      }
+    }
+
+    function confirmOrder(event) {
+      event.preventDefault();
+
+      // Additional manual validation for active payment details
+      if (currentPaymentMethod === 'card') {
+        const cardNum = document.getElementById('card-number').value.trim();
+        const expiry = document.getElementById('card-expiry').value.trim();
+        const cvv = document.getElementById('card-cvv').value.trim();
+        
+        if (cardNum.length < 15) {
+          alert('Please enter a valid credit card number.');
+          return;
+        }
+        if (expiry.length < 5) {
+          alert('Please enter a valid expiration date (MM/YY).');
+          return;
+        }
+        if (cvv.length < 3) {
+          alert('Please enter a valid CVV.');
+          return;
+        }
+      } else if (currentPaymentMethod === 'momo') {
+        const phone = document.getElementById('momo-phone').value.trim();
+        if (phone.length < 7) {
+          alert('Please enter a valid Mobile Money number.');
+          return;
+        }
+      }
+
+      // Show simulated loader spinner to wow user
+      const loader = document.getElementById('checkout-loading');
+      loader.classList.remove('hidden');
+
+      setTimeout(() => {
+        // Retrieve values for personalization
+        const userName = document.getElementById('checkout-name').value;
+        const userEmail = document.getElementById('checkout-email').value;
+        const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+        const delivery = subtotal >= 10000 ? 0 : 150;
+        const finalTotal = subtotal + delivery;
+
+        // Generate custom order reference number
+        const randRef = Math.floor(1000 + Math.random() * 9000);
+        const orderId = `PE-2026-${randRef}`;
+
+        // Populate success message personalization
+        document.getElementById('success-user-name').textContent = userName;
+        document.getElementById('success-user-email').textContent = userEmail;
+        document.getElementById('success-order-total').textContent = 'P' + finalTotal.toLocaleString() + '.00';
+        document.getElementById('success-order-ref').textContent = orderId;
+        
+        let paymentLabel = 'Credit Card';
+        if (currentPaymentMethod === 'momo') paymentLabel = 'Mobile Money';
+        if (currentPaymentMethod === 'cod') paymentLabel = 'Cash on Delivery';
+        document.getElementById('success-pay-method').textContent = paymentLabel;
+
+        // Reset form
+        document.getElementById('checkout-form').reset();
+        
+        // Clear Cart
+        cart = [];
+        saveCart();
+        updateCartCount();
+        renderCartItems();
+
+        // Close loading state and checkout modal
+        loader.classList.add('hidden');
+        closeCheckoutModal();
+
+        // Open appreciative success popup
+        document.getElementById('order-success').classList.remove('hidden');
+      }, 1500); // 1.5 seconds loading simulation
     }
 
     function closeSuccess() {
       document.getElementById('order-success').classList.add('hidden');
     }
   </script>
+
 
 </body>
 </html>

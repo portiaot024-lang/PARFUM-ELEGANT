@@ -14,8 +14,10 @@
     <nav>
       <div class="nav">
         <a href="index.html">Home</a>
-        <a href="about.html#about">About</a>
+        <a href="about.html">About</a>
         <a href="collections.html">Collections</a>
+        <a href="feedback.html">Feedback</a>
+        <a href="collections.html?openCart=true" class="cart-icon">🛒 <span id="cart-count">0</span></a>
       </div>
     </nav>
 
@@ -41,5 +43,28 @@
     <footer class="footer-blank"></footer>
 
   </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      updateCartCount();
+    });
+    
+    function updateCartCount() {
+      const saved = localStorage.getItem('parfum_elegant_cart');
+      let cart = [];
+      if (saved) {
+        try {
+          cart = JSON.parse(saved);
+        } catch (e) {
+          cart = [];
+        }
+      }
+      const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
+      const countEl = document.getElementById('cart-count');
+      if (countEl) {
+        countEl.textContent = totalCount;
+      }
+    }
+  </script>
 </body>
 </html>

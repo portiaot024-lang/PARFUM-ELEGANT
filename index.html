@@ -19,7 +19,7 @@
         <a href="about.html">About</a>
         <a href="collections.html">Collections</a>
         <a href="feedback.html">Feedback</a>
-        <a href="collections.html" class="cart-icon">🛒 <span id="cart-count">0</span></a>
+        <a href="collections.html?openCart=true" class="cart-icon">🛒 <span id="cart-count">0</span></a>
     </div>
     </nav> 
     <nav>
@@ -97,5 +97,28 @@
     <p>© 2026 PARFUM ELEGANT. All Rights Reserved.</p>
   </div>
 </footer>
+
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    updateCartCount();
+  });
+  
+  function updateCartCount() {
+    const saved = localStorage.getItem('parfum_elegant_cart');
+    let cart = [];
+    if (saved) {
+      try {
+        cart = JSON.parse(saved);
+      } catch (e) {
+        cart = [];
+      }
+    }
+    const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
+    const countEl = document.getElementById('cart-count');
+    if (countEl) {
+      countEl.textContent = totalCount;
+    }
+  }
+</script>
 </body>
 </html> 
