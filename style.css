@@ -480,6 +480,7 @@ h1, h2, h3,p{
   flex-direction: column;
   flex-grow: 1;
   background: #ffffff;
+  gap: 12px;
 }
 
 .product-title {
